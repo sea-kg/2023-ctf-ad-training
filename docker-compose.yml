@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  ctf01d_db:
+    image: mysql:5.7
+    volumes:
+      - "./tmp/mysql_database:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: KzhyntJxwt
+      MYSQL_DATABASE: ctf01d
+      MYSQL_USER: ctf01d
+      MYSQL_PASSWORD: ctf01d
+    networks:
+      - ctf01d_net
+
+  ctf01d_jury:
+    depends_on:
+      - ctf01d_db
+    image: sea5kg/ctf01d:v0.4.4
+    volumes:
+      - "./juryconf:/root/data"
+    environment:
+      CTF01D_WORKDIR: "/usr/share/ctf01d"
+      CTF01D_MYSQL_HOST: "ctf01d_db"
+      CTF01D_MYSQL_DATABASE: "ctf01d"
+      CTF01D_MYSQL_USER: "ctf01d"
+      CTF01D_MYSQL_PASSWORD: "ctf01d"
+    ports:
+      - "8080:8080"
+    restart: always
+    links:
+      - "ctf01d_db"
+    networks:
+      - ctf01d_net
+
+networks:
+  ctf01d_net:
+    driver: bridge
