@@ -55,4 +55,4 @@ teams:
     name: "Team 2"
     active: yes
     logo: "./html/images/teams0/team2.png"
-    ip_address: "10.10.12.1" # address to vulnserver
+    ip_address: "192.168.88.66" # address to vulnserver

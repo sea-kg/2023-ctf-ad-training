@@ -7,7 +7,7 @@ services:
     #   - "./lnk_flags:/root/www/lnks"
     ports:
       - "3154:3154"
-    # restart: always
+    restart: always
     networks:
       - ctf01d_vuln_net
 
