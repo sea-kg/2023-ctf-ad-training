@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  sibirctf2018_the_hole:
+    build: .
+    image: sibirctf2018_the_hole:0.0.1
+    volumes:
+      - "./flags:/root/flags"
+    ports:
+      - "5003:5003"
+    restart: always
+    networks:
+      - sibirctf2018_the_hole
+
+networks:
+  sibirctf2018_the_hole:
+    driver: bridge

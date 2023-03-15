@@ -38,8 +38,8 @@ checkers:
     script_path: "./checker.py"
     script_wait_in_sec: 5 # max time for running script
     time_sleep_between_run_scripts_in_sec: 15 # like a round for service
-  - id: "service2_maxigram"
-    service_name: "maxigram"
+  - id: "service2_hole"
+    service_name: "The Hole"
     enabled: yes
     script_path: "./checker.py"
     script_wait_in_sec: 5
@@ -50,7 +50,7 @@ teams:
     name: "Team 1"
     active: yes
     logo: "./html/images/teams0/team1.png"
-    ip_address: "127.0.0.1" # address to vulnserver
+    ip_address: "192.168.88.252" # address to vulnserver
   - id: "team2"
     name: "Team 2"
     active: yes

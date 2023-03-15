@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  service_lnks:
+    image: sibirctf2018:service-lnks
+    # volumes:
+    #   - "./lnk_flags:/root/www/lnks"
+    ports:
+      - "3154:3154"
+    # restart: always
+    networks:
+      - ctf01d_vuln_net
+
+  sibirctf2018_the_hole:
+    image: sibirctf2018:the_hole_service
+    volumes:
+        - "./flags:/root/flags"
+    ports:
+        - "5003:5003"
+    restart: always
+    networks:
+        - ctf01d_vuln_net
+
+networks:
+  ctf01d_vuln_net:
+    driver: bridge
