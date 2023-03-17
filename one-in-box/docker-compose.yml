@@ -1,0 +1,119 @@
+version: '3'
+
+services:
+  ctf01d_db:
+    image: mysql:5.7
+    volumes:
+      - "./tmp/mysql_database:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: KzhyntJxwt
+      MYSQL_DATABASE: ctf01d
+      MYSQL_USER: ctf01d
+      MYSQL_PASSWORD: ctf01d
+    networks:
+      - ctf01d_net
+
+  ctf01d_jury:
+    depends_on:
+      - ctf01d_db
+    image: sea5kg/ctf01d:v0.4.4
+    volumes:
+      - "./juryconf:/root/data"
+    environment:
+      CTF01D_WORKDIR: "/usr/share/ctf01d"
+      CTF01D_MYSQL_HOST: "ctf01d_db"
+      CTF01D_MYSQL_DATABASE: "ctf01d"
+      CTF01D_MYSQL_USER: "ctf01d"
+      CTF01D_MYSQL_PASSWORD: "ctf01d"
+    ports:
+      - "80:8080"
+    restart: always
+    links:
+      - "ctf01d_db"
+    networks:
+      - ctf01d_net
+
+  # service 1 - port 3154
+  team1_service1_server:
+    image: sibirctf2018:service-lnks
+    volumes:
+      - "./flags/team1_service1_flags:/root/www/lnks"
+    ports:
+      - "3154:3154"
+    restart: always
+    networks:
+      - ctf01d_game_simulation_net
+    
+  # service 1 - port 3154
+  team2_service1_server:
+    image: sibirctf2018:service-lnks
+    volumes:
+      - "./flags/team2_service1_flags:/root/www/lnks"
+    # ports:
+    #   - "3154:3154"
+    restart: always
+    networks:
+      - ctf01d_game_simulation_net
+  
+  # service 2 - port 5003
+  team2_service1_server:
+    image: sibirctf2018:the_hole_service
+    volumes:
+      - "./flags/team1_service2_flags:/root/flags"
+    ports:
+      - "5003:5003"
+    restart: always
+    networks:
+      - ctf01d_vuln_net
+  
+  # service 2 - port 5003
+  team2_service1_server:
+    image: sibirctf2018:the_hole_service
+    volumes:
+      - "./flags/team2_service2_flags:/root/flags"
+    # ports:
+    #     - "5003:5003"
+    restart: always
+    networks:
+        - ctf01d_vuln_net
+
+  # team1
+  team1_server:
+    image: haproxy:2.0
+    depends_on:
+      - team1_service1_server
+      - team1_service2_server
+    volumes:
+      - "./haproxy.configs/team1.cfg:/usr/local/etc/haproxy/haproxy.cfg"
+    command: haproxy -f /usr/local/etc/haproxy/haproxy.cfg
+    restart: always
+    ports:
+      - "3154:3154"
+      - "5003:5003"
+    networks:
+      - ctf01d_game_simulation_net
+
+  # team2
+  team2_server:
+    image: haproxy:2.0
+    depends_on:
+      - team2_service1_server
+      - team2_service2_server
+    volumes:
+      - "./haproxy.configs/team2.cfg:/usr/local/etc/haproxy/haproxy.cfg"
+    command: haproxy -f /usr/local/etc/haproxy/haproxy.cfg
+    restart: always
+    ports:
+      - "3154:3154"
+      - "5003:5003"
+    networks:
+      - ctf01d_net
+
+networks:
+  ctf01d_net:
+    driver: bridge
+    subnet: "10.10.6.0/24"
+    ip-range: "10.10.6.0/24"
+    gateway: "10.10.6.1"
+       
